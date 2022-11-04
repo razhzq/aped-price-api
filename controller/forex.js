@@ -28,13 +28,11 @@ module.exports.getExchangeRatesOfForex = async (_, res) => {
 			const symbol = newData["1. From_Currency Code"] + "/" + newData["3. To_Currency Code"]
 			return {
 				[symbol]: Number(newData["5. Exchange Rate"]),
+				last_refreshed: newData["6. Last Refreshed"],
 			}
 		})
 
-		//convert to object
-		const objToReturn = Object.assign({}, ...refactorData)
-
-		res.status(200).json(objToReturn)
+		res.status(200).json(refactorData)
 	} catch (err) {
 		console.log(err)
 	}
@@ -89,6 +87,7 @@ module.exports.getExchangeRateOfForexByName = async (req, res) => {
 			res.status(200).json({
 				success: true,
 				[symbol]: Number(newData["5. Exchange Rate"]),
+				last_refreshed: newData["6. Last Refreshed"],
 			})
 		}
 	} catch (err) {

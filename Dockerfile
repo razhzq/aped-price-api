@@ -1,16 +1,14 @@
-FROM node:12-alpine
+FROM node:16-alpine
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+# Create app directory
+WORKDIR /backend/services
 
-WORKDIR /home/node/app
-
+# Install app dependencies
 COPY package.json ./
-COPY yarn.lock ./
 
-USER node
+RUN npm install
 
-RUN yarn --frozen-lockfile
+# Bundle app source
+COPY . .
 
-COPY --chown=node:node . .
-
-CMD [ "node", "app.js" ]
+CMD [ "npm", "start" ]

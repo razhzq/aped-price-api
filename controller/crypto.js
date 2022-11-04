@@ -34,13 +34,11 @@ module.exports.getExchangeRateOfCrypto = async (_, res) => {
 			const symbol = newData["1. From_Currency Code"] + "/" + newData["3. To_Currency Code"]
 			return {
 				[symbol]: Number(newData["5. Exchange Rate"]),
+				last_refreshed: newData["6. Last Refreshed"],
 			}
 		})
 
-		//convert to object
-		const cryptoObj = Object.assign({}, ...dataAlphaCrypto)
-
-		res.status(200).json(cryptoObj)
+		res.status(200).json(dataAlphaCrypto)
 	} catch (err) {
 		console.log(err)
 	}
@@ -107,6 +105,7 @@ module.exports.getExchangeRateOfCryptoByName = async (req, res) => {
 			res.status(200).json({
 				success: true,
 				[symbol]: Number(newData["5. Exchange Rate"]),
+				last_refreshed: newData["6. Last Refreshed"],
 			})
 		}
 	} catch (err) {

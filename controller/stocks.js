@@ -1,4 +1,6 @@
+const moment = require("moment")
 const { getStocksValue, getStocksValueOfAll } = require("../services/stocks")
+const { convertUnixToGMT } = require("../util")
 
 // STOCK
 // get specific stock data
@@ -8,9 +10,11 @@ module.exports.getSpecificStockPrice = async (req, res) => {
 		const { symbol } = req.params
 		const resp = await getStocksValue(symbol)
 		const price = resp.data?.results?.p
+		const time = convertUnixToGMT(resp?.data?.results?.t)
 		res.status(200).json({
 			success: true,
 			price,
+			time,
 		})
 	} catch (err) {
 		res.status(404).json({
@@ -29,12 +33,12 @@ module.exports.getAllStocksPrice = async (_, res) => {
 			const result = r.data?.results
 			return {
 				[result?.T]: result?.p,
+				time: convertUnixToGMT(result?.t),
 			}
 		})
-		const pricesObj = Object.assign({}, ...prices)
 		res.status(200).json({
 			success: true,
-			prices: pricesObj,
+			prices,
 		})
 	} catch (err) {
 		res.status(404).json({
